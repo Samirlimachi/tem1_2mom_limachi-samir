@@ -39,6 +39,7 @@ SELECT
 FROM superstore;
 
 -- Rangos de fechas y descuentos
-SELECT MIN(order_date), MAX(order_date), MIN(ship_date), MAX(ship_date),
-       MIN(discount), MAX(discount)
+SELECT MIN(order_date) AS primer_pedido, MAX(order_date) AS ultimo_pedido,
+       MIN(ship_date) AS primer_envio, MAX(ship_date) AS ultimo_envio,
+       MIN(discount) AS desc_min, MAX(discount) AS desc_max
 FROM superstore;
