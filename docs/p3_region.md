@@ -1,7 +1,17 @@
 # Pregunta 3. Análisis de evolución comercial por región
 
-## Estrategia
+## Enunciado
+Determine la evolución de las ventas y ganancias por región durante los años disponibles. Debe obtener:
+- Ventas totales por región y año.
+- Ganancia total por región y año.
+- Margen de rentabilidad.
+- Variación porcentual respecto al año anterior.
+- Identificación de la región con mejor y peor desempeño comercial.
 
+Utilice CTE y funciones de ventana para resolver el problema.
+
+## Estrategia
+Agrupé las ventas y las ganancias por región y año en una CTE. Usé LAG() con PARTITION BY region para calcular la variación anual de cada región y RANK() para ordenar las regiones por ganancia.
 
 ## Consulta
 `sql/03_region.sql`
@@ -39,10 +49,12 @@
 | Central | 501239.89 | 39706.36 | 7.92 | 4 |
 
 ## Interpretación
+West quedó primero con 108 mil de ganancia y un margen del 14,94 %. Le siguieron East con 91,5 mil y un margen del 13,48 %, South con 46,7 mil y un 11,93 %, y Central con 39,7 mil y un 7,92 %. West también lideró en ventas. En 2017, sus ventas crecieron un 33 % y su ganancia aumentó un 82 %.
 
+Central vendió 501 mil, frente a los 392 mil de South, y aun así terminó con menos ganancia. En 2014, su margen fue de apenas 0,52 %, por lo que el aumento del 2.071 % debe leerse teniendo en cuenta que partió de una ganancia muy baja. En 2017, la ganancia de Central cayó un 62 %. Ese mismo año, South vendió un 31 % más y su ganancia se redujo a la mitad.
 
 ## Conclusión
-
+West tuvo el mejor desempeño porque convirtió su liderazgo en ventas en la mayor ganancia y el mayor margen. Los resultados de Central y South muestran por qué conviene mirar las tres cifras juntas. Una región puede vender más y quedarse con menos ganancia.
 
 ## Evidencia
 - `evidencias/p3_region.png`
