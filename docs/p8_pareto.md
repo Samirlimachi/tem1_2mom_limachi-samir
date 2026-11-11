@@ -1,7 +1,16 @@
 # Pregunta 8. Análisis Pareto de ventas y rentabilidad
 
-## Estrategia
+## Enunciado
+Aplique la regla 80/20 para identificar la concentración comercial. Realice dos análisis independientes:
 
+a) Determine qué cantidad de productos representa el 80% de las ventas acumuladas.
+
+b) Determine qué cantidad de productos representa el 80% de las ganancias acumuladas.
+
+Para ambos análisis: ordene los productos de mayor a menor contribución, calcule el porcentaje de participación individual, identifique los productos que concentran la mayor contribución económica, y compare ambos resultados y explique las diferencias encontradas.
+
+## Estrategia
+Ordené los productos de mayor a menor por ventas y por ganancia, y calculé el porcentaje acumulado en cada ranking. Así pude identificar cuántos productos hacían falta para llegar al 80 % de cada total.
 
 ## Consulta
 `sql/08_pareto.sql`
@@ -51,13 +60,13 @@ Top 10 por contribución a ganancias:
 | 10 | Zebra ZM400 Thermal Label Printer | Technology | 3343.54 | 1.1674 | 23.21 |
 
 ## Interpretación
-
+En ventas, 423 productos, equivalentes al 22,3 % del catálogo, concentraron el 80 % del total. El resultado se acerca a la regla 80/20. La ganancia se concentró aún más. Bastaron 167 productos, el 8,8 % del catálogo, para alcanzar el 80 % de la ganancia neta.
 
 ## Comparación ventas vs. ganancias
-
+El acumulado de ganancia llegó al 126,92 % antes de volver al 100 %. Esto ocurre porque el cálculo usa como referencia la ganancia neta total. Al ordenar los productos de mayor a menor, primero se suman las ganancias y, al final, las pérdidas de 304 productos reducen el acumulado hasta el 100 %. La Canon imageCLASS 2200 aportó por sí sola el 8,8 % de la ganancia neta. Technology ocupó ocho de los diez primeros puestos por ganancia. Cisco TelePresence y las sillas HON 5400 aparecieron entre los primeros por ventas y quedaron fuera de los primeros puestos por ganancia.
 
 ## Conclusión
-
+Una parte pequeña del catálogo sostiene la mayor parte de la ganancia. Si el objetivo es mejorar la rentabilidad, el ranking de ganancias permite identificar qué productos sostienen el resultado y cuáles lo reducen, incluso cuando sus ventas son altas.
 
 ## Evidencia
 - `evidencias/p8_pareto.png`
