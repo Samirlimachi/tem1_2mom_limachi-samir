@@ -1,7 +1,17 @@
 # Pregunta 5. Ranking de productos según rentabilidad
 
-## Estrategia
+## Enunciado
+Identifique los productos de mayor y menor desempeño económico. Determine:
+- Los cinco productos con mayor ganancia acumulada por categoría.
+- Los cinco productos con mayor volumen de ventas.
+- Los cinco productos con menor rentabilidad.
+- El margen de ganancia individual de cada producto.
+- La posición de cada producto dentro de su categoría.
 
+Utilice RANK(), DENSE_RANK() y funciones de agregación acumulativa.
+
+## Estrategia
+Ordené los productos por ventas y por ganancia. Comparé RANK() y DENSE_RANK() porque manejan los empates de forma distinta. Si dos productos empatan en el segundo puesto, RANK() asigna el cuarto al siguiente y DENSE_RANK() le asigna el tercero. También usé SUM() OVER para calcular la ganancia acumulada.
 
 ## Consulta
 `sql/05_productos.sql`
@@ -59,10 +69,12 @@
 El margen individual y la posición de cada producto están en la tabla `ranking_productos` (1894 productos).
 
 ## Interpretación
+La Canon imageCLASS 2200 lideró ambos rankings con 61,6 mil en ventas y 25,2 mil de ganancia. Otros productos con ventas altas tuvieron resultados muy distintos. El Cisco TelePresence perdió 1.811 y las sillas HON 5400 quedaron con una ganancia de cero.
 
+Entre los productos con peor desempeño estuvieron dos impresoras 3D Cubify CubeX, con márgenes de −80 % y −48 %, además de una impresora Lexmark y dos mesas de conferencia. En Furniture, 123 de los 383 productos registraron pérdidas. Su margen promedio fue del 8,26 %, frente al 14,44 % de Technology y el 25,63 % de Office Supplies.
 
 ## Conclusión
-
+El ranking de ventas sirve para ver qué productos generan más ingresos. El de ganancias permite decidir cuáles vale la pena impulsar por su aporte al negocio. La Canon destaca en ambos, mientras que los resultados de Cisco y HON justifican revisar su rentabilidad antes de intentar vender más unidades.
 
 ## Evidencia
 - `evidencias/p5_productos.png`
