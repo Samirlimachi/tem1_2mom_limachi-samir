@@ -12,9 +12,9 @@ Actividades:
 Entregables: diccionario de datos, DDL, instrucciones de carga y evidencia de registros importados.
 
 ## Estrategia
-Primero creé `superstore_raw`, una tabla externa que lee el CSV desde HDFS con `OpenCSVSerde`. Esto me permitió leer correctamente los nombres de productos que tienen comas dentro de las comillas. En esa etapa, todos los campos se leen como texto.
+Hice la carga en dos pasos. Primero creé `superstore_raw`, una tabla externa que lee el CSV desde HDFS con `OpenCSVSerde`. Así pude leer bien los nombres de productos que incluyen comas entre comillas. En esta primera tabla, todos los campos se leyeron como texto.
 
-Después usé `CREATE TABLE ... AS SELECT` (CTAS) para crear `superstore` en formato ORC con los tipos que necesitaba. Convertí las fechas a `DATE` con `unix_timestamp(..., 'M/d/yyyy')` y los montos a `DECIMAL`.
+Después creé `superstore` en formato ORC con `CREATE TABLE ... AS SELECT` (CTAS). En ese paso usé `unix_timestamp(..., 'M/d/yyyy')` para interpretar las fechas del CSV y convertirlas a `DATE`. También guardé los montos como `DECIMAL`.
 
 ## Diccionario de datos
 
@@ -47,45 +47,40 @@ Después usé `CREATE TABLE ... AS SELECT` (CTAS) para crear `superstore` en for
 - `sql/01_tabla.sql`: tabla `superstore`
 
 ## Procedimiento de carga
-
-1. Convertir el CSV a UTF-8:
+1. Convertí el CSV a UTF-8 con `iconv`.
    ```bash
    iconv -f WINDOWS-1252 -t UTF-8 data/superstore_original.csv | sed 's/\r$//' > data/superstore.csv
    ```
-2. Subir el archivo a HDFS:
+2. Copié el archivo al contenedor con `docker cp`, creé el directorio `/user/hive/superstore` en HDFS y subí el CSV con `hdfs dfs -put`.
    ```bash
    docker cp data/superstore.csv bigdata-dockerspark-transnochados-yarn-resourcemanager-1:/tmp/
-   docker exec -it bigdata-dockerspark-transnochados-yarn-resourcemanager-1 bash
-   hdfs dfs -mkdir -p /user/hive/superstore
-   hdfs dfs -put /tmp/superstore.csv /user/hive/superstore/
+   docker exec -it bigdata-dockerspark-transnochados-yarn-resourcemanager-1 hdfs dfs -mkdir -p /user/hive/superstore
+   docker exec -it bigdata-dockerspark-transnochados-yarn-resourcemanager-1 hdfs dfs -put /tmp/superstore.csv /user/hive/superstore/
    ```
-3. Crear la tabla staging `superstore_raw`:
+3. Ejecuté `01_ddl.sql` para crear la tabla externa `superstore_raw` en formato `TEXTFILE`.
    ```bash
    docker cp sql/01_ddl.sql hive-server:/tmp/
    docker exec -it hive-server hive -f /tmp/01_ddl.sql
    ```
-   Resultado: 9994 registros.
-4. Crear la tabla `superstore` en ORC con los tipos:
+4. Ejecuté `01_tabla.sql` para crear la tabla `superstore` en formato ORC con los tipos de datos definidos.
    ```bash
    docker cp sql/01_tabla.sql hive-server:/tmp/
    docker exec -it hive-server hive -f /tmp/01_tabla.sql
    ```
-   Resultado: 9994 registros.
 
 ## Resultado
+El CSV tenía 21 campos y 9.994 registros. Al contar las filas en `superstore_raw` y en `superstore`, obtuve los mismos 9.994 registros en ambas tablas. También comprobé que la fecha `11/8/2016` se convirtió en `2016-11-08` y que el nombre `Hon Deluxe Fabric Upholstered Stacking Chairs, Rounded Back` quedó completo en un solo campo.
 
 | Tabla | Formato | Registros |
 |-------|---------|----------:|
-| `superstore_raw` | TEXTFILE (CSV, externa) | 9994 |
+| `superstore_raw` | TEXTFILE (externa) | 9994 |
 | `superstore` | ORC | 9994 |
 
-Las fechas se convirtieron correctamente (por ejemplo, `11/8/2016` pasó a `2016-11-08`) y el nombre `Hon Deluxe Fabric Upholstered Stacking Chairs, Rounded Back` se leyó completo pese a la coma.
-
 ## Interpretación
-El archivo tiene 21 campos y 9994 registros. La tabla analítica conserva los 9994 registros del CSV, por lo que la carga no perdió filas. `postal_code` se dejó como texto para no perder ceros a la izquierda, y los montos se guardaron como `DECIMAL` para evitar errores de redondeo.
+El conteo muestra que se conservó la cantidad de registros durante la carga. Dejé `postal_code` como texto para conservar los ceros a la izquierda y usé `DECIMAL` para mantener la precisión de los montos en los cálculos.
 
 ## Conclusión
-El modelo quedó listo para las consultas del examen: los datos están en HDFS, tipados y en formato ORC.
+La tabla `superstore` quedó lista para las consultas del examen. Los datos están en HDFS, en formato ORC y con los tipos definidos desde la carga, así que pude usar las fechas y los montos directamente en las consultas.
 
 ## Evidencia
 - `evidencias/p1_staging.png`
