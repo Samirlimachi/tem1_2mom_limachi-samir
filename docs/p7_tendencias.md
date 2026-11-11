@@ -1,7 +1,17 @@
 # Pregunta 7. Análisis de tendencias temporales
 
-## Estrategia
+## Enunciado
+Construya un análisis de evolución mensual de ventas y ganancias. Debe incluir:
+- Ventas y ganancias mensuales.
+- Variación porcentual respecto al mes anterior.
+- Comparación con el mismo mes del año anterior.
+- Promedio móvil de tres meses.
+- Identificación de los tres meses con mayor y menor volumen de ventas.
 
+Utilice LAG(), funciones de ventana y agregaciones temporales.
+
+## Estrategia
+Agrupé las ventas y las ganancias por mes. Usé LAG() para comparar cada mes con el anterior y LAG() con PARTITION BY mes para compararlo con el mismo mes del año anterior. También calculé un promedio móvil con el mes actual y los dos anteriores mediante AVG() OVER y una ventana ROWS BETWEEN 2 PRECEDING AND CURRENT ROW.
 
 ## Consulta
 `sql/07_tendencias.sql`
@@ -78,10 +88,12 @@
 | 2014-01 | 14236.90 | 2450.19 |
 
 ## Interpretación
+Septiembre, noviembre y diciembre suelen tener ventas altas. Enero y febrero suelen ser más bajos. En los cambios de año observados, las ventas de enero cayeron entre un 55 % y un 75 % respecto de diciembre. A lo largo del período, el promedio móvil subió de unos 14 mil a unos 94 mil.
 
+Noviembre de 2017 fue el mes con más ventas, con unos 118 mil, seguido por diciembre de 2016 y septiembre de 2017. Los meses con menos ventas fueron febrero de 2014, con unos 4,5 mil, febrero de 2015 y enero de 2014. Noviembre de 2017 alcanzó el récord de ventas y quedó por debajo de diciembre de 2016 en ganancia. Julio de 2014 y enero de 2015 cerraron con ganancia negativa.
 
 ## Conclusión
-
+Las ventas crecieron a lo largo del período y siguieron un patrón estacional. Para evaluar enero, conviene compararlo también con enero del año anterior, ya que la caída frente a diciembre se repite. Para evaluar los meses récord, conviene mirar la ganancia junto con las ventas.
 
 ## Evidencia
 - `evidencias/p7_tendencias.png`
